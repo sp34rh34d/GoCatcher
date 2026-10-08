@@ -3,7 +3,6 @@
 package catcher
 
 import (
-	"bufio"
 	"context"
 	"errors"
 	"fmt"
@@ -35,7 +34,8 @@ type Options struct {
 	PrivateKey      string
 	PublicKey       string
 	CustomRoutes    routes.Store
-	EnableServeo    bool
+	EnableServeo    bool   // legacy alias for Tunnel == "serveo"
+	Tunnel          string // serveo | localhost.run | pinggy | ngrok | nip.io
 	EnableDashboard bool
 	EnableDNS       bool
 	DNSPort         int
@@ -48,7 +48,7 @@ type Options struct {
 // RequestCatcher owns the HTTP server configuration and lifecycle.
 type RequestCatcher struct {
 	opt       Options
-	serveoCmd *exec.Cmd
+	tunnelCmd *exec.Cmd
 	dns       *dnscatch.Server
 	logw      io.WriteCloser
 }
@@ -258,8 +258,8 @@ func (rc *RequestCatcher) Run() {
 			ui.Error("log file: " + err.Error())
 		}
 	}
-	if rc.opt.EnableServeo {
-		go rc.startServeo()
+	if provider := rc.tunnelProvider(); provider != "" {
+		go rc.startTunnel(provider)
 	}
 	if rc.opt.EnableDNS {
 		addr := fmt.Sprintf("%s:%d", rc.opt.BindAddress, rc.opt.DNSPort)
@@ -297,36 +297,12 @@ func (rc *RequestCatcher) Run() {
 	}
 }
 
-func (rc *RequestCatcher) startServeo() {
-	ui.Info("Starting Serveo service")
-	rc.serveoCmd = exec.Command("ssh", "-R",
-		fmt.Sprintf("80:localhost:%d", rc.opt.BindPort), "serveo.net")
-	stdout, err := rc.serveoCmd.StdoutPipe()
-	if err != nil {
-		ui.Error("serveo: " + err.Error())
-		return
-	}
-	rc.serveoCmd.Stderr = rc.serveoCmd.Stdout
-	if err := rc.serveoCmd.Start(); err != nil {
-		ui.Error("serveo: " + err.Error())
-		return
-	}
-	sc := bufio.NewScanner(stdout)
-	for sc.Scan() {
-		line := sc.Text()
-		if strings.Contains(line, "Forwarding HTTP traffic") {
-			ui.Info(strings.TrimSpace(line))
-			break
-		}
-	}
-}
-
 func (rc *RequestCatcher) cleanup() {
-	if rc.serveoCmd != nil && rc.serveoCmd.Process != nil {
-		ui.Info("Stopping Serveo...")
-		_ = rc.serveoCmd.Process.Kill()
-		_ = rc.serveoCmd.Wait()
-		rc.serveoCmd = nil
+	if rc.tunnelCmd != nil && rc.tunnelCmd.Process != nil {
+		ui.Info("Stopping tunnel...")
+		_ = rc.tunnelCmd.Process.Kill()
+		_ = rc.tunnelCmd.Wait()
+		rc.tunnelCmd = nil
 	}
 	if rc.dns != nil {
 		rc.dns.Stop()

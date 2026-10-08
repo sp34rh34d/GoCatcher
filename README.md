@@ -81,7 +81,8 @@ To edit or add your own, use the `add` command, or drop files in
     run                   ->  start http server
        ├──  --port        ->  specify http port (default 8080)
        ├──  --interface   ->  specify listen interface (default 0.0.0.0)
-       ├──  --serveo      ->  expose local app over the internet via serveo.net
+       ├──  --serveo      ->  expose local app via serveo.net (alias of --tunnel serveo)
+       ├──  --tunnel <p>  ->  expose local app via serveo | localhost.run | pinggy | ngrok | nip.io
        ├──  --ssl         ->  enable ssl context
        ├──  --key         ->  set private key (.key/.pem)
        ├──  --pub         ->  set public key (.crt/.pem)
@@ -103,7 +104,7 @@ capture, decode and get notified" loop:
 - **Callback decoder & alerts** — hits on payload callback paths (`/collect`,
   `/ssti-oob`, `/xxe-oob`, `/ssrf-hit`, `/c/<token>`…) are classified
   (XSS/SSTI/XXE/SSRF/CSRF/…), the XSS beacon's base64 JSON is **decoded**, and a
-  high-visibility `FIRED` banner is printed with the stolen cookies/DOM.
+  high-visibility `🔔 FIRED` banner is printed with the stolen cookies/DOM.
 - **Notifications** — `set slack|discord|telegram-token+telegram-chat|webhook`
   to get pinged the moment a callback fires (great for bug bounty).
 - **Live dashboard** — `run --dashboard` → open `/_dashboard` for a real-time
@@ -124,9 +125,24 @@ capture, decode and get notified" loop:
 ## Fetch GoCatcher on local network
 Starting GoCatcher on port `1337`, allow internal network only (using a local web instance for testing)
 
+<img width="1664" height="961" alt="Screenshot 2025-09-26 at 8 22 16 AM" src="https://github.com/user-attachments/assets/c9be5afd-2df3-48b4-b2f3-dcfee4c7a78a" />
+<br>
+
 ## Fetch GoCatcher via internet
 Sometimes you need to fetch your request catcher over internet (bugBounty/CTFs/pentesting), to expose your GoCatcher over internet, you can use a free [AWS EC2](https://aws.amazon.com/es/ec2/?trk=02bd2428-3348-4251-8b76-83ffa306f0f1&sc_channel=ps&ef_id=CjwKCAjw89jGBhB0EiwA2o1On8sv-Lp0963ncIsL-IVsaw-DsyBYpD8YT7UWJoWMhlqK8RxYmlvSEhoCVNkQAvD_BwE:G:s&s_kwcid=AL!4422!3!647999789403!e!!g!!aws%20ec2!19685287168!143348659342&gad_campaignid=19685287168&gbraid=0AAAAADjHtp8RYoaYTiZTBI93z1pldSMDl&gclid=CjwKCAjw89jGBhB0EiwA2o1On8sv-Lp0963ncIsL-IVsaw-DsyBYpD8YT7UWJoWMhlqK8RxYmlvSEhoCVNkQAvD_BwE) or using a port forward service like [lhr](https://localhost.run) / [serveo](https://serveo.net).\
-Serveo is available on GoCatcher using the arg `--serveo`.
+GoCatcher can open the tunnel for you with `--tunnel <provider>` (or the legacy
+`--serveo`). Pick whichever is up — serveo has been flaky:
+
+| Provider | Command | Needs |
+|---|---|---|
+| serveo | `run --tunnel serveo` | ssh, serveo.net reachable |
+| localhost.run | `run --tunnel localhost.run` | ssh |
+| pinggy | `run --tunnel pinggy` | ssh (uses port 443) |
+| ngrok | `run --tunnel ngrok` | `ngrok` binary + `ngrok config add-authtoken <token>` |
+| nip.io | `run --tunnel nip.io` | nothing — but it is **DNS only** (no tunnel): it just gives a hostname that resolves to your IP, so the target must already be able to reach that IP (public/EC2 or same LAN) |
+
+The assigned public URL is printed as `<provider> » https://…`. Set it as your
+callback so payloads use it automatically: `set callback-url https://…`.
 <br>
 <img width="1658" height="686" alt="Screenshot 2025-09-26 at 8 24 32 AM" src="https://github.com/user-attachments/assets/c5278451-9f62-4c43-8b5a-fef1521fcae1" />
 

@@ -49,6 +49,7 @@ type parsedArgs struct {
 	id        string
 	headers   stringSlice
 	serveo    bool
+	tunnel    string
 	dashboard bool
 	dns       bool
 	dnsPort   string
@@ -75,6 +76,7 @@ func parseLine(tokens []string) parsedArgs {
 	fs.StringVar(&pa.id, "id", "", "")
 	fs.Var(&pa.headers, "header", "")
 	fs.BoolVar(&pa.serveo, "serveo", false, "")
+	fs.StringVar(&pa.tunnel, "tunnel", "", "")
 	fs.BoolVar(&pa.dashboard, "dashboard", false, "")
 	fs.BoolVar(&pa.dns, "dns", false, "")
 	fs.StringVar(&pa.dnsPort, "dns-port", "5353", "")
@@ -179,6 +181,7 @@ func runServer(store routes.Store, cap *capture.Store, args parsedArgs) {
 		PublicKey:       args.pub,
 		CustomRoutes:    store,
 		EnableServeo:    args.serveo,
+		Tunnel:          args.tunnel,
 		EnableDashboard: args.dashboard,
 		EnableDNS:       args.dns,
 		DNSPort:         dnsPort,

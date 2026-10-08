@@ -253,7 +253,7 @@ func Banner() {
 type command struct{ name, flags, desc string }
 
 var commandList = []command{
-	{"run", "--port --interface --ssl --key --pub --serveo --dashboard --dns --quiet --log", "start intercept server + monitor mode"},
+	{"run", "--port --interface --ssl --key --pub --tunnel <serveo|localhost.run|pinggy|ngrok|nip.io> --dashboard --dns --quiet --log", "start intercept server + monitor mode"},
 	{"add", "--path --header", "register a payload route (opens editor)"},
 	{"del", "--id <uuid>", "purge a registered route"},
 	{"list", "", "enumerate active routes"},
