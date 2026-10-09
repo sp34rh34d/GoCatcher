@@ -81,7 +81,6 @@ To edit or add your own, use the `add` command, or drop files in
     run                   ->  start http server
        ├──  --port        ->  specify http port (default 8080)
        ├──  --interface   ->  specify listen interface (default 0.0.0.0)
-       ├──  --serveo      ->  expose local app via serveo.net (alias of --tunnel serveo)
        ├──  --tunnel <p>  ->  expose local app via serveo | localhost.run | pinggy | ngrok | nip.io
        ├──  --ssl         ->  enable ssl context
        ├──  --key         ->  set private key (.key/.pem)
