@@ -104,7 +104,7 @@ capture, decode and get notified" loop:
 - **Callback decoder & alerts** — hits on payload callback paths (`/collect`,
   `/ssti-oob`, `/xxe-oob`, `/ssrf-hit`, `/c/<token>`…) are classified
   (XSS/SSTI/XXE/SSRF/CSRF/…), the XSS beacon's base64 JSON is **decoded**, and a
-  high-visibility `🔔 FIRED` banner is printed with the stolen cookies/DOM.
+  high-visibility `FIRED` banner is printed with the stolen cookies/DOM.
 - **Notifications** — `set slack|discord|telegram-token+telegram-chat|webhook`
   to get pinged the moment a callback fires (great for bug bounty).
 - **Live dashboard** — `run --dashboard` → open `/_dashboard` for a real-time
