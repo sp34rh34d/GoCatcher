@@ -125,7 +125,7 @@ capture, decode and get notified" loop:
 ## Fetch GoCatcher on local network
 Starting GoCatcher on port `1337`, allow internal network only (using a local web instance for testing)
 
-<img width="1664" height="961" alt="Screenshot 2025-09-26 at 8 22 16 AM" src="https://github.com/user-attachments/assets/c9be5afd-2df3-48b4-b2f3-dcfee4c7a78a" />
+<img width="920" height="697" alt="Captura de pantalla 2026-10-08 a la(s) 6 00 59 p  m" src="https://github.com/user-attachments/assets/b0a10f7a-9424-4b67-a62a-1b18b3fa7f09" />
 <br>
 
 ## Fetch GoCatcher via internet
@@ -144,7 +144,8 @@ GoCatcher can open the tunnel for you with `--tunnel <provider>` (or the legacy
 The assigned public URL is printed as `<provider> » https://…`. Set it as your
 callback so payloads use it automatically: `set callback-url https://…`.
 <br>
-<img width="1658" height="686" alt="Screenshot 2025-09-26 at 8 24 32 AM" src="https://github.com/user-attachments/assets/c5278451-9f62-4c43-8b5a-fef1521fcae1" />
+<img width="959" height="756" alt="Captura de pantalla 2026-10-08 a la(s) 6 03 58 p  m" src="https://github.com/user-attachments/assets/a2563ada-1acc-499d-9f8d-df01005d9c3c" />
+
 
 ## Adding a custom route and save your XSS payload
 You can store your XSS payloads using the following command\
